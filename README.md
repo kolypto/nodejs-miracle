@@ -165,8 +165,8 @@ acl.list(['blog', 'page']); // -> { blog: ['post'], page: ['create', ...] }
 
 ### Export and Import
 
-Miracle does not offer any built-in persistence but the facilities are enough
-to implement it:
+Miracle does not offer any built-in persistence offers enough facilities to 
+implement it the way you need:
 
 ```js
 var miracle = require('miracle');
@@ -186,20 +186,21 @@ acl.add(save.struct);
 acl.grant(save.grants);
 ```
 
-No helpers are provided so you can store entities separatedly.
+Note: as `Acl.grant()` defines all the necessary roles, resources and 
+permissions, there's no ultimate need to export them explicitly.
 
 
 
 Grant Permissions
 -----------------
 
-### grant(roles, grants)
+### grant(roles, resources, permissions)
 Grant permission[s] over resource[s] to the specified role[s].
 
 Has multiple footprints:
 
-* `grant(roles, resources, permissions)` - grant all specified permissions
-    to the provided resources ;
+* `grant(roles, resources, permissions)` - grant permissions 
+    to the listed resources ;
 * `grant(roles, grants)` - grant permissions using a grant object that maps 
     a list of permissions to a resource: `{ resource: [perm, ...] }`.
     
@@ -215,15 +216,17 @@ Revoke permission[s] over resource[s] from the specified role[s].
 
 Has multiple footprints:
 
-* `revoke(roles)` remove all permissions from all resources ;
-* `revoke(roles, resources)` - remove all permissions from the specified 
-    resources ;
+* `revoke(roles)` remove permissions from all resources ;
+* `revoke(roles, resources)` remove all permissions from the listed resources ;
+* `revoke(roles, resources, permissions)` remove specific permissions
+    from the listed resources ;
 * `revoke(roles, grants)` - revoke permissions using a grant object that maps
     a list of permissions to a resource: `{ resource: [perm, ...], ... }`.
 
 No roles, resources or permissions are removed implicitly.
 
 ```js
+acl.revoke('anonymous');
 acl.revoke(['admin', 'manager'], 'blog', ['create', 'update']);
 acl.revoke('anonymous', { page: ['view'] });
 ```
