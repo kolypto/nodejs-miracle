@@ -236,7 +236,7 @@ acl.revoke('anonymous', { page: ['view'] });
 Authorize
 ---------
 
-### check(roles, resources[, permissions])
+### check(roles[, resources[, permissions]])
 Check whether the named role[s] have access to resource[s] with permission[s].
 
 Has multiple footprints:
@@ -257,9 +257,11 @@ acl.check(['anonymous'], 'blog', 'read'); // -> true
 acl.check('registered', { page: ['update', 'delete'] });
 ```
 
-### checkAny(roles, resources[, permissions])
+### checkAny(roles[, resources[, permissions]])
 
 Same as `check`, but the united permissions are checked.
+
+In order to pass the test, any roles having access to any resource is sufficient.
 
 Also supports the `checkAny(roles, grants)` fingerprint.
 

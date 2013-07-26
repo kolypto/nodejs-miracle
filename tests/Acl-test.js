@@ -81,7 +81,7 @@ vows.describe('Miracle')
                     // Resources created
                     assert.deepEqual(acl.listResources(), ['user', 'event', 'log']);
                     // Permissions are correct
-                    assert.deepEqual(acl.listPermissions('user'), ['read', 'update', 'create', 'delete']);
+                    assert.deepEqual(acl.listPermissions('user'), ['create', 'delete', 'read', 'update']);
                     assert.deepEqual(acl.listPermissions('event'), ['create']);
                     assert.deepEqual(acl.listPermissions('log'), ['delete']);
                     // listPermissions() works fine
@@ -90,21 +90,21 @@ vows.describe('Miracle')
                 },
                 'listPermissions() works fine': function(acl){
                     // All
-                    assert.deepEqual(acl.listPermissions(), ['read', 'update', 'create', 'delete']);
+                    assert.deepEqual(acl.listPermissions(), ['create', 'delete', 'read', 'update']);
                     // Invalid -> nothing
                     assert.deepEqual(acl.listPermissions(':)'), []);
                     // array ok
-                    assert.deepEqual(acl.listPermissions('user'), ['read', 'update', 'create', 'delete']);
+                    assert.deepEqual(acl.listPermissions('user'), ['create', 'delete', 'read', 'update']);
                     // duplicates removed
-                    assert.deepEqual(acl.listPermissions(['user', 'user']), ['read', 'update', 'create', 'delete']);
+                    assert.deepEqual(acl.listPermissions(['user', 'user']), ['create', 'delete', 'read', 'update']);
                 },
                 'list() works fine': function(acl){
                     // All
-                    assert.deepEqual(acl.list(), { user: ['read', 'update', 'create', 'delete'], log: ['delete'], event: ['create'] });
+                    assert.deepEqual(acl.list(), { user: ['create', 'delete', 'read', 'update'], log: ['delete'], event: ['create'] });
                     // Invalid -> nothing
                     assert.deepEqual(acl.list(':)'), []);
                     // array ok
-                    assert.deepEqual(acl.list('user'), { user: ['read', 'update', 'create', 'delete'] });
+                    assert.deepEqual(acl.list('user'), { user: ['create', 'delete', 'read', 'update'] });
                     assert.deepEqual(acl.list(['log', 'event']), { log: ['delete'], event: ['create'] });
                 }
             },
@@ -123,7 +123,7 @@ vows.describe('Miracle')
                     assert.deepEqual(acl.listResources(), ['user', 'event', 'log']);
                 },
                 'permissions added': function(acl){
-                    assert.deepEqual(acl.list(), { user: ['c', 'r', 'u', 'd'], log: ['d'], event: ['c'] });
+                    assert.deepEqual(acl.list(), { user: ['c', 'd', 'r', 'u'], log: ['d'], event: ['c'] });
                 }
             }
         }
@@ -158,11 +158,11 @@ vows.describe('Miracle')
                 'structure created': function(acl){
                     assert.deepEqual( acl.listRoles(), ['guest', 'anonymous', 'demo', 'user', 'admin'] );
                     assert.deepEqual( acl.listResources(), ['/page', '/article', '/blog', '/profile', '/admin'] );
-                    assert.deepEqual( acl.listPermissions('/page') , ['read', 'create', 'edit', 'delete']);
-                    assert.deepEqual( acl.listPermissions('/article') , ['vote', 'create', 'edit']);
+                    assert.deepEqual( acl.listPermissions('/page') , ['create', 'delete', 'edit', 'read']);
+                    assert.deepEqual( acl.listPermissions('/article') , ['create', 'edit', 'vote']);
                     assert.deepEqual( acl.listPermissions('/blog') , ['vote']);
-                    assert.deepEqual( acl.listPermissions('/profile') , ['create', 'edit', 'delete']);
-                    assert.deepEqual( acl.listPermissions('/admin') , ['open', 'manage']);
+                    assert.deepEqual( acl.listPermissions('/profile') , ['create', 'delete', 'edit']);
+                    assert.deepEqual( acl.listPermissions('/admin') , ['manage', 'open']);
                 },
 
                 'grants object sane': function(acl){
@@ -178,13 +178,13 @@ vows.describe('Miracle')
                             '/blog': ['vote']
                         },
                         user: {
-                            '/profile': ['create', 'edit', 'delete'],
+                            '/profile': ['create', 'delete', 'edit'],
                             '/article': ['create', 'edit'],
-                            '/page': ['create', 'read', 'edit', 'delete']
+                            '/page': ['create', 'delete', 'edit', 'read']
                         },
                         admin: {
-                            '/page': ['create', 'read', 'edit', 'delete'],
-                            '/admin': ['open', 'manage'],
+                            '/page': ['create', 'delete', 'edit', 'read'],
+                            '/admin': ['manage', 'open'],
                             '/profile': ['create', 'delete']
                         }
                     });
@@ -234,11 +234,11 @@ vows.describe('Miracle')
                             },
                             demo: {},
                             user: {
-                                '/page': ['create', 'read', 'edit', 'delete']
+                                '/page': ['create', 'delete', 'edit', 'read']
                             },
                             admin: {
-                                '/page': ['create', 'read', 'edit', 'delete'],
-                                '/admin': ['open', 'manage']
+                                '/page': ['create', 'delete', 'edit', 'read'],
+                                '/admin': ['manage', 'open']
                             }
                         });
                     }
@@ -261,10 +261,10 @@ vows.describe('Miracle')
                             user: {
                                 '/profile': ['edit'],
                                 '/article': ['edit'],
-                                '/page': ['create', 'read', 'edit', 'delete']
+                                '/page': ['create', 'delete', 'edit', 'read']
                             },
                             admin: {
-                                '/page': ['create', 'read', 'edit', 'delete'],
+                                '/page': ['create', 'delete', 'edit', 'read'],
                                 '/admin': ['open']
                             }
                         });
@@ -288,10 +288,10 @@ vows.describe('Miracle')
                             user: {
                                 '/profile': ['edit'],
                                 '/article': ['edit'],
-                                '/page': ['create', 'read', 'edit', 'delete']
+                                '/page': ['create', 'delete', 'edit', 'read']
                             },
                             admin: {
-                                '/page': ['create', 'read', 'edit', 'delete'],
+                                '/page': ['create', 'delete', 'edit', 'read'],
                                 '/admin': ['open']
                             }
                         });
@@ -302,15 +302,125 @@ vows.describe('Miracle')
             'authorize': {
                 topic: function(acl){
                     return acl();
+                },
+
+                'check()': function(acl){
+                    // check(roles)
+                    assert.equal(acl.check('user'), true);
+                    assert.equal(acl.check(['user', 'demo']), true);
+                    assert.equal(acl.check('nOn-eXistEnt'), false);
+                    assert.equal(acl.check(['user', 'nOn-eXistEnt']), false);
+                    // check(roles, resources)
+                    assert.equal(acl.check('user', '/page'), true);
+                    assert.equal(acl.check('user', ['/page', '/article']), true);
+                    assert.equal(acl.check(['user', 'admin'], ['/page', '/profile']), true);
+                    assert.equal(acl.check(['user', 'admin'], []), true);
+                    assert.equal(acl.check('user', '/0'), false);
+                    assert.equal(acl.check('user', ['/page', '/0']), false);
+                    assert.equal(acl.check(['user', '0'], ['/page', '/profile']), false);
+                    assert.equal(acl.check(['user', 'admin'], ['/page', '/0']), false);
+                    // check(roles, resources, permissions)
+                    assert.equal(acl.check('user', '/page', 'read'), true);
+                    assert.equal(acl.check('user', '/page', ['read', 'edit']), true);
+                    assert.equal(acl.check('user', ['/page', '/profile'], ['create', 'delete']), true);
+                    assert.equal(acl.check(['user', 'admin'], ['/page', '/profile'], ['create', 'delete']), true);
+                    assert.equal(acl.check('user', '/page', '0'), false);
+                    assert.equal(acl.check('user', '/0', ['read', 'edit']), false);
+                    assert.equal(acl.check('user', '/page', ['read', '0']), false);
+                    assert.equal(acl.check('user', ['/page', '/profile'], ['create', '0']), false);
+                    assert.equal(acl.check(['user', 'admin'], ['/page', '/profile'], ['create', '0']), false);
+                    // check(roles, grants)
+                    assert.equal(acl.check('user', { '/page': 'read' }), true);
+                    assert.equal(acl.check('user', { '/page': ['read'] }), true);
+                    assert.equal(acl.check('user', { '/page': ['read', 'edit'] }), true);
+                    assert.equal(acl.check(['user', 'admin'], { '/page': ['create', 'delete'], '/profile': ['create', 'delete'] }), true);
+                    assert.equal(acl.check('user', { '/0': ['read'] }), false);
+                    assert.equal(acl.check('user', { '/page': ['read', '0'] }), false);
+                    assert.equal(acl.check(['user', 'admin'], { '/page': ['create', '0'], '/profile': ['create', 'delete'] }), false);
+                },
+
+                'checkAny()': function(acl){
+                    // check(roles)
+                    assert.equal(acl.checkAny('user'), true);
+                    assert.equal(acl.checkAny('n0n'), false);
+                    assert.equal(acl.checkAny(['user', 'n0n']), true);
+                    // check(roles, resources)
+                    assert.equal(acl.checkAny('user', '/page'), true);
+                    assert.equal(acl.checkAny('user', ['/page', '/article']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], ['/page', '/profile']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], []), true);
+                    assert.equal(acl.checkAny(['user', '0'], []), true);
+                    assert.equal(acl.checkAny('user', '/0'), false);
+                    assert.equal(acl.checkAny('user', ['/page', '/0']), true);
+                    assert.equal(acl.checkAny(['user', '0'], ['/page', '/profile']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], ['/page', '/0']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], ['/0']), false);
+                    // check(roles, resources, permissions)
+                    assert.equal(acl.checkAny('user', '/page', 'read'), true);
+                    assert.equal(acl.checkAny('user', '/page', ['read', 'edit']), true);
+                    assert.equal(acl.checkAny('user', ['/page', '/profile'], ['create', 'delete']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], ['/page', '/profile'], ['create', 'delete']), true);
+                    assert.equal(acl.checkAny('user', '/page', '0'), false);
+                    assert.equal(acl.checkAny('user', '/0', ['read', 'edit']), false);
+                    assert.equal(acl.checkAny('user', '/page', ['read', '0']), true);
+                    assert.equal(acl.checkAny('user', ['/page', '/profile'], ['create', '0']), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], ['/page', '/profile'], ['create', '0']), true);
+                    // check(roles, grants)
+                    assert.equal(acl.checkAny('user', { '/page': 'read' }), true);
+                    assert.equal(acl.checkAny('user', { '/page': ['read'] }), true);
+                    assert.equal(acl.checkAny('user', { '/page': ['read', 'edit'] }), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], { '/page': ['create', 'delete'], '/profile': ['create', 'delete'] }), true);
+                    assert.equal(acl.checkAny('user', { '/0': ['read'] }), false);
+                    assert.equal(acl.checkAny('user', { '/page': ['read', '0'] }), true);
+                    assert.equal(acl.checkAny(['user', 'admin'], { '/page': ['create', '0'], '/profile': ['create', 'delete'] }), true);
                 }
-                // TODO: authorization tests
             },
 
             'show': {
-                topic: function(acl){
-                    return acl();
+                topic: function(){
+                    var acl = new miracle.Acl();
+                    acl.grant('user', '/page', ['read']);
+                    acl.grant('author', '/page', ['read', 'create']);
+                    acl.grant('author', '/blog', ['read']);
+                    acl.grant('admin', '/page', ['delete', 'edit']);
+                    acl.grant('admin', '/blog', ['read', 'post']);
+                    return acl;
+                },
+
+                'which()': function(acl){
+                    assert.deepEqual(acl.which('admin'), acl.show('admin').admin);
+                    assert.deepEqual(acl.which(['admin', 'n0n']), {});
+                    assert.deepEqual(acl.which(['user', 'author']), {
+                        '/page': ['read']
+                    });
+                    assert.deepEqual(acl.which(['author', 'admin']), {
+                        '/blog': ['read']
+                    });
+                    assert.deepEqual(acl.which(['user', 'author', 'admin']), {});
+                },
+                'whichAny()': function(acl){
+                    assert.deepEqual(acl.whichAny('admin'), acl.show('admin').admin);
+                    assert.deepEqual(acl.whichAny(['admin', 'n0n']), acl.show('admin').admin);
+                    assert.deepEqual(acl.whichAny(['user', 'author']), {
+                        '/page': ['create', 'read'],
+                        '/blog': ['read']
+                    });
+                    assert.deepEqual(acl.whichAny(['author', 'admin']), {
+                        '/page': ['create', 'delete', 'edit', 'read'],
+                        '/blog': ['post', 'read']
+                    });
+                    assert.deepEqual(acl.whichAny(['user', 'author', 'admin']), {
+                        '/page': ['create', 'delete', 'edit', 'read'],
+                        '/blog': ['post', 'read']
+                    });
+                },
+                'show()': function(acl){
+                    assert.deepEqual(acl.show('n0n'), {});
+                    assert.deepEqual(acl.show(['user', 'n0n']), {
+                        user: { '/page': ['read'] }
+                    });
+                    assert.deepEqual(acl.show(), acl.grants);
                 }
-                // TODO: show tests
             }
         }
     })
