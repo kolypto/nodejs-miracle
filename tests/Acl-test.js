@@ -143,7 +143,7 @@ vows.describe('Miracle')
                         '/profile': ['create', 'delete']
                     });
                     acl.grant('admin', {
-                        '/admin': ['open', 'manage'],
+                        '/admin': ['open', 'manage']
                     });
 
                     return acl;
@@ -420,6 +420,32 @@ vows.describe('Miracle')
                         user: { '/page': ['read'] }
                     });
                     assert.deepEqual(acl.show(), acl.grants);
+                }
+            },
+
+            'remove*()': {
+                topic: function(acl){
+                    acl = acl();
+                    acl.removeRole(['anonymous', 'guest']);
+                    acl.removeResource('/profile');
+                    acl.removePermission(['/blog', '/page', '/admin'], ['delete', 'vote', 'create', 'manage']);
+                    return acl;
+                },
+
+                'removed ok': function(acl){
+                    assert.deepEqual(acl.show(), {
+                        demo: {
+                            '/article': ['vote']
+                        },
+                        user: {
+                            '/article': ['create', 'edit'],
+                            '/page': ['edit', 'read']
+                        },
+                        admin: {
+                            '/admin': ['open'],
+                            '/page': ['edit', 'read']
+                        }
+                    });
                 }
             }
         }
