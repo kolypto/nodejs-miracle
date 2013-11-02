@@ -2,7 +2,7 @@ Miracle
 =======
 
 Miracle is an ACL for NodeJS that was designed to be well-structuted,
-simple yet exhaustive. It uses *roles* to grant *permissions* over *resources*.
+simple yet exhaustive. It uses *permissions* defined on *resources*, and *roles* are granted with the access to them.
 
 To be a universal tool, it does not include any special cases, 
 does not force you to persist and does not insist on any formats or conventions.
@@ -22,13 +22,27 @@ Reference
 Define The Structure
 --------------------
 
+### Acl
+To start using miracle, instantiate the `Acl` object:
+
+```js
+var Acl = require('miracle').Acl;
+
+var acl = new Acl();
+```
+
+The `Acl` object keeps track of your *resources* and *permissions* defined on them, handles *grants* over *roles* and
+provides utilities to manage them. When configured, you can check the access against the defined state.
+
 ### Create
 
-You can define the structure explicitly to keep things at their places,
-however this is optional: any role, resource or permission mentioned in 
-`grant()` is created implicitly.
+Methods from this section allow you to build the *structure*: list of roles, resources and permissions.
 
-### Create
+It's not required that you have the structure defined before you start granting the access: the `grant()` method
+implicitly creates all resources and permissions that were not previously defined.
+
+Start with defining the *resources* and *permissions* on them, then you can grant a *role* with the access to some
+permissions on a resource.
 
 #### `addRole(roles)`
 Define role[s]. 
@@ -45,7 +59,7 @@ acl.listRoles(); // -> ['admin', 'anonymous', 'registered']
 ```
 
 #### `addResource(resources)`
-Define a resource.
+Define resource[s].
 
 * `resources`: resource[s] to define.
 
@@ -62,7 +76,7 @@ acl.listResources(); // -> ['blog', 'page', 'article']
 #### `addPermission(resources, permissions)`
 Define permission[s] on resource[s].
 
-* `resources`: resource[s] to define the permission under.
+* `resources`: resource[s] to define the permission on.
     Are created if were not previously defined.
 * `permissions`: permission[s] to define.
 
@@ -91,7 +105,7 @@ acl.add({
 
 ### Remove
 #### `removeRole(roles)`
-Remove defined role[s] and their grants.
+Remove role[s] and their grants.
 
 * `roles`: role[s] to remove.
 
@@ -101,7 +115,7 @@ acl.removeRole(['anonymous', 'registered']);
 ```
 
 #### `removeResource(resources)`
-Remove defined resource[s] along with their grants and permissions.
+Remove resource[s] along with their grants and permissions.
 
 * `resources`: resource[s] to remove.
 
@@ -111,7 +125,7 @@ acl.removeResource(['page', 'article']);
 ```
 
 #### `removePermission(resources, permissions)`
-Remove permission[s] defined under a role.
+Remove permission[s] from resource[s].
 
 * `resources`: resource[s] to remove the permissions from.
 * `permissions`: permission[s] to remove.
@@ -151,7 +165,7 @@ acl.listPermissions(); // -> [ ..all.. ]
 ```
 
 #### `list([resources])`
-Get the list of permissions for resources in a structured object.
+Get the *structure*: list of resources mapped to their permissions.
 
 * `resources`: resource[s] to get the structure for. Optional.
 
@@ -165,8 +179,8 @@ acl.list(['blog', 'page']); // -> { blog: ['post'], page: ['create', ...] }
 
 ### Export and Import
 
-Miracle does not offer any built-in persistence offers enough facilities to 
-implement it the way you need:
+There's no single 'export everything' method: instead, you sequentially export the list of roles,
+the structure (resources and permissions), and the grants:
 
 ```js
 var miracle = require('miracle');
@@ -186,8 +200,8 @@ acl.add(save.struct);
 acl.grant(save.grants);
 ```
 
-Note: as `Acl.grant()` defines all the necessary roles, resources and 
-permissions, there's no ultimate need to export them explicitly.
+Note: As the `grant()` method creates resources and roles implicitly, it's usually enough to export the grants.
+  You'll only lose roles & resources with empty grants.
 
 
 
@@ -199,7 +213,7 @@ Grant permission[s] over resource[s] to the specified role[s].
 
 Has multiple footprints:
 
-* `grant(roles, resources, permissions)` - grant permissions 
+* `grant(roles, resources, permissions)` - grant the listed roles with permissions
     to the listed resources ;
 * `grant(roles, grants)` - grant permissions using a grant object that maps 
     a list of permissions to a resource: `{ resource: [perm, ...] }`.
@@ -216,11 +230,11 @@ Revoke permission[s] over resource[s] from the specified role[s].
 
 Has multiple footprints:
 
-* `revoke(roles)` remove permissions from all resources ;
-* `revoke(roles, resources)` remove all permissions from the listed resources ;
-* `revoke(roles, resources, permissions)` remove specific permissions
+* `revoke(roles)` remove grants from all resources ;
+* `revoke(roles, resources)` remove all grants from the listed resources ;
+* `revoke(roles, resources, permissions)` remove specific grants
     from the listed resources ;
-* `revoke(roles, grants)` - revoke permissions using a grant object that maps
+* `revoke(roles, grants)` - revoke grants using a grant object that maps
     a list of permissions to a resource: `{ resource: [perm, ...], ... }`.
 
 No roles, resources or permissions are removed implicitly.
@@ -261,9 +275,9 @@ acl.check('registered', { page: ['update', 'delete'] });
 
 Same as `check`, but the united permissions are checked.
 
-In order to pass the test, any roles having access to any resource is sufficient.
+In order to pass the test, any role having access to any resource is sufficient.
 
-Also supports the `checkAny(roles, grants)` fingerprint.
+Also supports the `checkAny(roles, grants)` footprint.
 
 
 Show Grants
@@ -284,7 +298,7 @@ acl.which(['anonymous', 'registered']); // -> { page: ['view'] }
 ```
 
 ### show([roles])
-Get grants for the specified roles.
+Get all grants for the specified roles.
 
 * `roles`: role[s] to get the grants for.
 
