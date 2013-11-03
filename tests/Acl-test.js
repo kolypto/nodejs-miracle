@@ -145,6 +145,14 @@ vows.describe('Miracle')
                     acl.grant('admin', {
                         '/admin': ['open', 'manage']
                     });
+                    acl.grant({ // duplicates, but tests grant({...}) footprint
+                        'admin': {
+                            '/admin': ['open', 'manage']
+                        },
+                        'user': {
+                            '/page': ['create', 'read']
+                        }
+                    });
 
                     return acl;
                 };
