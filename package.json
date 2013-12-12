@@ -1,7 +1,7 @@
 {
   "name": "miracle",
   "description": "Flexible role-based authorization solution that is a pleasure to use",
-  "version": "0.0.2",
+  "version": "0.0.3",
   
   "author": "kolypto <kolypto@gmail.com>",
   "license": "MIT",
@@ -21,7 +21,7 @@
   ],
   
   "dependencies": {
-    "underscore": "1.5.x"
+    "lodash": "2.4.x"
   },
   "devDependencies": {
     "vows": "0.7.x"
