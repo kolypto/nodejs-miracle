@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kolypto/nodejs-miracle.png?branch=master)](https://travis-ci.org/kolypto/nodejs-miracle)
+
 Miracle
 =======
 
