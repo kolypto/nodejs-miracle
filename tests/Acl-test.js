@@ -1,5 +1,5 @@
 var vows = require('vows'),
-    _ = require('underscore'),
+    _ = require('lodash'),
     assert = require('assert'),
     miracle = require('..')
     ;
