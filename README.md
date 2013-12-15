@@ -1,3 +1,5 @@
+[![Version](https://badge.fury.io/js/miracle.png)](https://npmjs.org/package/miracle)
+[![Dependency Status](https://gemnasium.com/kolypto/nodejs-miracle.png)](https://gemnasium.com/kolypto/nodejs-miracle)
 [![Build Status](https://travis-ci.org/kolypto/nodejs-miracle.png?branch=master)](https://travis-ci.org/kolypto/nodejs-miracle)
 
 Miracle
