@@ -21,7 +21,7 @@
   ],
   
   "dependencies": {
-    "lodash": "2.4.x"
+    "lodash": "^4.13.1"
   },
   "devDependencies": {
     "vows": "0.7.x"
