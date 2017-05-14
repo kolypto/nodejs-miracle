@@ -1,8 +1,8 @@
 {
   "name": "miracle",
   "description": "Flexible role-based authorization solution that is a pleasure to use",
-  "version": "0.0.3",
-  
+  "version": "0.0.4",
+
   "author": "kolypto <kolypto@gmail.com>",
   "license": "MIT",
   "maintainers": [
@@ -12,16 +12,14 @@
     "type": "git",
     "url": "git@github.com:kolypto/nodejs-miracle.git"
   },
-  
   "main": "./lib/index",
   "keywords": [
     "acl",
     "authorization",
     "rbac"
   ],
-  
   "dependencies": {
-    "lodash": "2.4.x"
+    "lodash": "^4.17.0"
   },
   "devDependencies": {
     "vows": "0.7.x"
@@ -29,7 +27,6 @@
   "engines": {
     "node": ">= 0.9.0"
   },
-  
   "scripts": {
     "test": "vows tests/*-test.js tests/**/*-test.js --spec"
   }
