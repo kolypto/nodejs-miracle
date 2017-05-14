@@ -12,14 +12,12 @@
     "type": "git",
     "url": "git@github.com:kolypto/nodejs-miracle.git"
   },
-
   "main": "./lib/index",
   "keywords": [
     "acl",
     "authorization",
     "rbac"
   ],
-
   "dependencies": {
     "lodash": "^4.17.0"
   },
@@ -29,7 +27,6 @@
   "engines": {
     "node": ">= 0.9.0"
   },
-
   "scripts": {
     "test": "vows tests/*-test.js tests/**/*-test.js --spec"
   }
